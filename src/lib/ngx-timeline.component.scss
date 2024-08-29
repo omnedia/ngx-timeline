@@ -1,0 +1,111 @@
+.om-timeline {
+  --om-timeline-entries-gap: 5rem;
+  --om-timeline-entry-gap: 4rem;
+  --om-timeline-entry-title-gap: 2rem;
+
+  width: 100%;
+
+  .om-timeline-entries {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--om-timeline-entries-gap);
+    padding: 10rem 0;
+
+    .om-timeline-entry {
+      display: flex;
+      justify-content: start;
+      padding-top: 40px;
+      gap: var(--om-timeline-entry-gap);
+    }
+  }
+
+  .om-timeline-entry-header {
+    position: sticky;
+    top: 10rem;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: var(--om-timeline-entry-title-gap);
+    width: 100%;
+    max-width: 25rem;
+
+    .om-timeline-circle {
+      height: 40px;
+      width: 40px;
+      border-radius: 50%;
+      background-color: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .om-timeline-inner-circle {
+      height: 16px;
+      width: 16px;
+      border-radius: 50%;
+      background-color: rgb(38 38 38);
+      border: 1px solid rgb(64 64 64);
+    }
+  }
+
+  .om-timeline-entry-content {
+    flex: 1;
+  }
+
+  .om-timeline-line-wrapper {
+    position: absolute;
+    top: 0;
+    left: 20px;
+
+    .om-timeline-line {
+      width: 2px;
+      background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        #e2e8f0 50%,
+        transparent 100%
+      );
+      mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        black 10%,
+        black 90%,
+        transparent 100%
+      );
+      overflow: hidden;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 2px;
+    }
+
+    .om-timeline-motion {
+      width: 2px;
+      background: linear-gradient(
+        to top,
+        #7f00ff 0%,
+        #3b82f6 50%,
+        transparent 100%
+      );
+      border-radius: 50%;
+    }
+  }
+
+  &.right {
+    .om-timeline-entries .om-timeline-entry {
+      flex-direction: row-reverse;
+
+      .om-timeline-entry-header {
+        flex-direction: row-reverse;
+      }
+    }
+
+    .om-timeline-line-wrapper {
+      left: unset;
+      right: 20px;
+    }
+  }
+}

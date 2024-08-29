@@ -1,0 +1,25 @@
+{
+  "name": "ngx-timeline",
+  "description": "A simple component library to add an animated timeline view.",
+  "version": "1.0.0",
+  "peerDependencies": {
+    "@angular/common": "^18.2.0",
+    "@angular/core": "^18.2.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false,
+  "keywords": [
+    "npm",
+    "animation",
+    "timeline",
+    "beam",
+    "component"
+  ],
+  "repository": {
+    "url": "https://github.com/omnedia/ngx-timeline"
+  },
+  "author": "Markus Block (markus.block@omnedia.com)",
+  "license": "MIT"
+}

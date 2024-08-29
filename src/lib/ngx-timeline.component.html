@@ -1,0 +1,30 @@
+<div
+  class="om-timeline"
+  [ngStyle]="style"
+  [ngClass]="styleClass"
+  [class.left]="orientation === 'left'"
+  [class.right]="orientation === 'right'"
+  #wrapper
+>
+  <div class="om-timeline-entries">
+    <div
+      *ngFor="let item of templateData; let i = index"
+      class="om-timeline-entry"
+      #entries
+    >
+      <div class="om-timeline-entry-header">
+        <div class="om-timeline-circle">
+          <div class="om-timeline-inner-circle"></div>
+        </div>
+        <div class="om-timeline-entry-title" [innerHTML]="item.title"></div>
+      </div>
+      <div class="om-timeline-entry-content" [innerHTML]="item.content"></div>
+    </div>
+
+    <div class="om-timeline-line-wrapper">
+      <div class="om-timeline-line" #timelineBackground>
+        <div #timelineLine class="om-timeline-motion"></div>
+      </div>
+    </div>
+  </div>
+</div>
