@@ -15,9 +15,13 @@
     .om-timeline-entry {
       display: flex;
       justify-content: start;
-      padding-top: 40px;
+      padding-top: 20px;
       gap: var(--om-timeline-entry-gap);
     }
+  }
+
+  &.switch > .om-timeline-entries {
+    gap: calc(var(--om-timeline-entries-gap) * 6);
   }
 
   .om-timeline-entry-header {
@@ -59,6 +63,13 @@
     position: absolute;
     top: 0;
     left: 20px;
+    pointer-events: none;
+
+    .d-none {
+      display: none;
+      height: 0;
+      width: 0;
+    }
 
     .om-timeline-line {
       width: 2px;
@@ -100,12 +111,101 @@
 
       .om-timeline-entry-header {
         flex-direction: row-reverse;
+        justify-content: space-between;
       }
     }
 
     .om-timeline-line-wrapper {
       left: unset;
       right: 20px;
+    }
+  }
+
+  &.switch {
+    .om-timeline-entries .om-timeline-entry {
+      &.right-side {
+        flex-direction: row-reverse;
+
+        .om-timeline-entry-header {
+          flex-direction: row-reverse;
+        }
+      }
+
+      &.left-side {
+        flex-direction: row;
+
+        .om-timeline-entry-header {
+          flex-direction: row;
+        }
+      }
+    }
+
+    .om-timeline-line-wrapper {
+      left: 20px;
+    }
+  }
+
+  .om-timeline-path {
+    stroke-width: 2px;
+    fill: none;
+    stroke: url(#gradientBg); /* Apply the gradient to the background path */
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .om-timeline-gradient-path {
+    stroke-width: 2px;
+    fill: none;
+    stroke: url(#gradient); /* Apply the gradient to the animated path */
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    transition: stroke-dashoffset 0.5s ease; /* Smooth animation */
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  .om-timeline {
+    &.switch > .om-timeline-entries {
+      gap: calc(var(--om-timeline-entries-gap) * 3);
+    }
+
+    .om-timeline-entries {
+      .om-timeline-entry {
+        position: relative;
+        flex-direction: column !important;
+
+        .om-timeline-entry-header {
+          position: relative;
+          top: 0;
+          max-width: 100%;
+          text-align: left;
+        }
+
+        &.left-side {
+          .om-timeline-entry-content {
+            margin-left: 70px;
+          }
+
+          .om-timeline-entry-header {
+            left: 0;
+            margin-right: auto;
+          }
+        }
+
+        &.right-side {
+          .om-timeline-entry-header {
+            right: 0;
+            margin-left: auto;
+            justify-content: space-between;
+          }
+
+          .om-timeline-entry-content {
+            margin-right: 70px;
+          }
+        }
+      }
     }
   }
 }

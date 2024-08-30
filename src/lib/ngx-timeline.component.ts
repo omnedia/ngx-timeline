@@ -22,10 +22,14 @@ import { TimelineEntry, TimelineEntryTemplate } from "./ngx-timeline.types";
   imports: [CommonModule],
 })
 export class NgxTimelineComponent implements AfterViewInit, OnDestroy {
+  // TODO: Add Input for Gradient Color (Straight as well as Switch)
+  // TODO: Add Input for Timeline Width (Straight as well as SVG on Switch)
+  // TODO: Fix right orientation styling
+
   @ViewChild("wrapper")
   wrapperRef!: ElementRef<HTMLElement>;
 
-  @ViewChildren("entries") entriesList!: QueryList<HTMLElement>;
+  @ViewChildren("entries") entriesList!: QueryList<ElementRef<HTMLElement>>;
 
   @ViewChild("timelineBackground")
   timelineBackgroundRef!: ElementRef<HTMLElement>;
@@ -33,8 +37,17 @@ export class NgxTimelineComponent implements AfterViewInit, OnDestroy {
   @ViewChild("timelineLine")
   timelineLineRef!: ElementRef<HTMLElement>;
 
+  @ViewChild("timelineSvg")
+  timelineSvgRef!: ElementRef<SVGElement>;
+
+  @ViewChild("timelinePath")
+  timelinePathRef!: ElementRef<SVGPathElement>;
+
+  @ViewChild("timelineGradientPath")
+  timelineGradientPathRef!: ElementRef<SVGPathElement>;
+
   @Input("orientation")
-  orientation: "left" | "right" = "left";
+  orientation: "left" | "right" | "switch" = "left";
 
   @Input("styleClass")
   styleClass?: string;
@@ -171,8 +184,12 @@ export class NgxTimelineComponent implements AfterViewInit, OnDestroy {
   }
 
   setHeight(): void {
-    const rect = this.wrapperRef.nativeElement.getBoundingClientRect();
-    this.timelineBackgroundRef.nativeElement.style.height = `${rect.height}px`;
+    if (this.orientation != "switch") {
+      const rect = this.wrapperRef.nativeElement.getBoundingClientRect();
+      this.timelineBackgroundRef.nativeElement.style.height = `${rect.height}px`;
+    } else {
+      this.updateSvgPath();
+    }
     this.updateTimelineLine();
   }
 
@@ -188,6 +205,26 @@ export class NgxTimelineComponent implements AfterViewInit, OnDestroy {
         ? rect.top * -1
         : (this.scrollableParent as HTMLElement).scrollTop;
 
+    if (this.orientation === "switch") {
+      let progress = topPosition / (rect.height - scrollHeight);
+
+      if (progress >= 1) {
+        progress = 1;
+      } else if (progress <= 0) {
+        progress = 0;
+      }
+
+      const length =
+        this.timelineGradientPathRef.nativeElement.getTotalLength();
+
+      this.timelineGradientPathRef.nativeElement.style.strokeDasharray = `${length}`;
+      this.timelineGradientPathRef.nativeElement.style.strokeDashoffset = `${
+        length * (1 - progress)
+      }`;
+
+      return;
+    }
+
     let progress = topPosition / rect.height;
 
     if (topPosition >= rect.height || progress >= 1) {
@@ -198,5 +235,66 @@ export class NgxTimelineComponent implements AfterViewInit, OnDestroy {
     this.timelineLineRef.nativeElement.style.height = `${
       progress * rect.height + scrollHeight * 0.5
     }px`;
+  }
+
+  updateSvgPath(): void {
+    const path = this.calculateSvgPath();
+    const wrapperRect = this.wrapperRef.nativeElement.getBoundingClientRect();
+    this.timelineSvgRef.nativeElement.setAttribute(
+      "width",
+      `${wrapperRect.width - 20}` // Subtract 20px to account for the left offset
+    );
+    this.timelineSvgRef.nativeElement.setAttribute(
+      "height",
+      `${wrapperRect.height}`
+    );
+    this.timelinePathRef.nativeElement.setAttribute("d", path);
+    this.timelineGradientPathRef.nativeElement.setAttribute("d", path);
+  }
+
+  calculateSvgPath(): string {
+    const entries = this.entriesList.toArray();
+    let path = "";
+
+    // Adjust the control point extensions based on screen size
+    const isMobile = window.innerWidth <= 1000;
+    const curveExtension = isMobile ? 200 : 500; // Shorter curve extensions on mobile
+
+    for (let i = 0; i < entries.length; i++) {
+      const entryRect = entries[i].nativeElement.getBoundingClientRect();
+      const wrapperRect = this.wrapperRef.nativeElement.getBoundingClientRect();
+      const startX = i % 2 === 0 ? 0 : wrapperRect.width - 40; // Start from 0px or the right side
+      const endX = i % 2 === 0 ? wrapperRect.width - 40 : 0; // End at the opposite side
+      const startY = entryRect.top - wrapperRect.top;
+      const endY = entryRect.bottom - wrapperRect.top;
+
+      if (i === 0) {
+        // Move to the starting point of the first entry, but 10rem (100px) above it
+        path += `M${startX},${startY - 160}`;
+      }
+
+      // Extend the straight line slightly before starting the curve
+      const extendedY = endY + 10;
+
+      // Draw the extended straight line
+      path += ` L${startX},${extendedY}`;
+
+      if (i < entries.length - 1) {
+        const nextEntryRect =
+          entries[i + 1].nativeElement.getBoundingClientRect();
+        const nextStartY = nextEntryRect.top - wrapperRect.top;
+
+        const controlPointY1 = extendedY + curveExtension; // Adjusted control points for mobile
+        const controlPointY2 = nextStartY - curveExtension;
+
+        // S-shaped curve with adjusted control points for smoother transition on mobile
+        path += ` C${startX},${controlPointY1} ${endX},${controlPointY2} ${endX},${nextStartY}`;
+      } else {
+        // End the path with a straight line at the last entry, but extend it by 10rem (160px)
+        path += ` L${startX},${endY + 160}`;
+      }
+    }
+
+    return path;
   }
 }
