@@ -71,6 +71,11 @@ export class NgxTimelineComponent implements AfterViewInit, OnDestroy {
   private scrollableParent: HTMLElement | Window = window;
   private scrollListener!: () => void;
 
+  constructor(
+    private readonly sanitizer: DomSanitizer,
+    private renderer: Renderer2
+  ) {}
+
   ngAfterViewInit(): void {
     this.getViewEncapsulationTag();
     this.determineScrollContext();
@@ -94,11 +99,6 @@ export class NgxTimelineComponent implements AfterViewInit, OnDestroy {
 
     window.removeEventListener("resize", () => this.setHeight());
   }
-
-  constructor(
-    private readonly sanitizer: DomSanitizer,
-    private renderer: Renderer2
-  ) {}
 
   getViewEncapsulationTag(): void {
     const parent = this.wrapperRef.nativeElement.parentElement?.parentElement;
