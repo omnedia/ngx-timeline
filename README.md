@@ -79,21 +79,29 @@ const timelineEntries: TimelineEntry[] = [
 
 ```html
 <om-timeline
-  [data]="data"
   [orientation]="orientation"
+  [data]="data"
   [entriesGap]="entriesGap"
   [entryGap]="entryGap"
   [titleGap]="titleGap"
+  [titleMaxWidth]="titleMaxWidth"
+  [pathWidth]="pathWidth"
+  [pathColor]="pathColor"
+  [gradientColors]="gradientColors"
   styleClass="your-custom-class"
 ></om-timeline>
 ```
 
 - `data` (required): An array of timeline entries. Each entry must include a title and content.
-- `orientation` (optional): Specifies the alignment of the timeline. Accepts 'left' or 'right'. Default is 'left'.
-- `entriesGap` (optional): Controls the gap between the timeline entries. Accepts any valid CSS size value. Default is '5rem'.
-- `entryGap` (optional): Controls the gap between the title and content within an entry. Accepts any valid CSS size value. Default is '4rem'.
-- `titleGap` (optional): Controls the gap between the circle and the title within an entry. Accepts any valid CSS size value. Default is '2rem'.
-- `styleClass` (optional): A custom CSS class to apply to the component.
+- `orientation` (optional): Defines the alignment of the timeline entries. Accepts 'left', 'right', or 'switch'. Default is 'left'.
+- `entriesGap` (optional): Defines the gap between timeline entries. Accepts any valid CSS size value. Default is '5rem'.
+- `entryGap` (optional): Defines the gap between the title and content within an entry. Accepts any valid CSS size value. Default is '4rem'.
+- `titleGap` (optional): Defines the gap between the circle and the title within an entry. Accepts any valid CSS size value. Default is '2rem'.
+- `titleMaxWidth` (optional): Defines the max width of the title elements. Default is '25rem'.
+- `pathWidth` (optional): Defines the width of the timeline path. Accepts any valid CSS size value. Default is '2px'.
+- `pathColor` (optional): Defines the colors of the timeline path. Accepts an array of two CSS color values for the path. Default is '#e2e8f0'.
+- `gradientColors` (optional): Defines the colors for the gradient on the path. Accepts an array of two CSS color values. Default is ['#3b82f6', '#7f00ff'].
+- `styleClass` (optional): Custom CSS class to apply to the component.
 
 ## Example
 

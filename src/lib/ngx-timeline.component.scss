@@ -2,6 +2,12 @@
   --om-timeline-entries-gap: 5rem;
   --om-timeline-entry-gap: 4rem;
   --om-timeline-entry-title-gap: 2rem;
+  --om-timeline-entry-title-max-width: 25rem;
+  --om-timeline-path-width: 2px;
+
+  --om-timeline-gradient-start: #3b82f6;
+  --om-timeline-gradient-end: #7f00ff;
+  --om-timeline-path-color: #e2e8f0;
 
   width: 100%;
 
@@ -33,7 +39,7 @@
     align-self: flex-start;
     gap: var(--om-timeline-entry-title-gap);
     width: 100%;
-    max-width: 25rem;
+    max-width: var(--om-timeline-entry-title-max-width);
 
     .om-timeline-circle {
       height: 40px;
@@ -72,7 +78,7 @@
     }
 
     .om-timeline-line {
-      width: 2px;
+      width: var(--om-timeline-path-width);
       background: linear-gradient(
         to bottom,
         transparent 0%,
@@ -146,22 +152,22 @@
   }
 
   .om-timeline-path {
-    stroke-width: 2px;
+    stroke-width: var(--om-timeline-path-width);
     fill: none;
-    stroke: url(#gradientBg); /* Apply the gradient to the background path */
+    stroke: url(#gradientBg);
     stroke-linecap: round;
     stroke-linejoin: round;
   }
 
   .om-timeline-gradient-path {
-    stroke-width: 2px;
+    stroke-width: var(--om-timeline-path-width);
     fill: none;
-    stroke: url(#gradient); /* Apply the gradient to the animated path */
+    stroke: url(#gradient);
     stroke-linecap: round;
     stroke-linejoin: round;
     stroke-dasharray: 1000;
     stroke-dashoffset: 1000;
-    transition: stroke-dashoffset 0.5s ease; /* Smooth animation */
+    transition: stroke-dashoffset 0.5s ease;
   }
 }
 

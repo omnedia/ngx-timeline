@@ -22,10 +22,6 @@ import { TimelineEntry, TimelineEntryTemplate } from "./ngx-timeline.types";
   imports: [CommonModule],
 })
 export class NgxTimelineComponent implements AfterViewInit, OnDestroy {
-  // TODO: Add Input for Gradient Color (Straight as well as Switch)
-  // TODO: Add Input for Timeline Width (Straight as well as SVG on Switch)
-  // TODO: Fix right orientation styling
-
   @ViewChild("wrapper")
   wrapperRef!: ElementRef<HTMLElement>;
 
@@ -66,6 +62,39 @@ export class NgxTimelineComponent implements AfterViewInit, OnDestroy {
   set titleGap(gap: string) {
     this.style["--om-timeline-entry-title-gap"] = gap;
   }
+
+  @Input("pathWidth")
+  set pathWidth(pathWidth: string) {
+    this.style["--om-timeline-path-width"] = pathWidth;
+  }
+
+  @Input("titleMaxWidth")
+  set titleMaxWidth(titleMaxWidth: string) {
+    this.style["--om-timeline-entry-title-max-width"] = titleMaxWidth;
+  }
+
+  @Input("pathColor")
+  set pathColorValue(pathColor: string) {
+    this.pathColor = pathColor;
+    this.style["--om-timeline-path-color"] = pathColor;
+  }
+
+  @Input("gradientColors")
+  set gradientColors(gradientColors: string[]) {
+    if (gradientColors.length !== 2) {
+      return;
+    }
+
+    this.gradientStart = gradientColors[0];
+    this.gradientEnd = gradientColors[1];
+
+    this.style["--om-timeline-gradient-start"] = this.gradientStart;
+    this.style["--om-timeline-gradient-end"] = this.gradientEnd;
+  }
+
+  gradientStart = "#3b82f6";
+  gradientEnd = "#7f00ff";
+  pathColor = "#e2e8f0";
 
   @Input("data")
   set dataValue(data: TimelineEntry[]) {
@@ -242,7 +271,7 @@ export class NgxTimelineComponent implements AfterViewInit, OnDestroy {
     const wrapperRect = this.wrapperRef.nativeElement.getBoundingClientRect();
     this.timelineSvgRef.nativeElement.setAttribute(
       "width",
-      `${wrapperRect.width - 20}` // Subtract 20px to account for the left offset
+      `${wrapperRect.width - 20}`
     );
     this.timelineSvgRef.nativeElement.setAttribute(
       "height",
@@ -269,7 +298,7 @@ export class NgxTimelineComponent implements AfterViewInit, OnDestroy {
       const endY = entryRect.bottom - wrapperRect.top;
 
       if (i === 0) {
-        // Move to the starting point of the first entry, but 10rem (100px) above it
+        // Move to the starting point of the first entry, by 10rem (100px) above it
         path += `M${startX},${startY - 160}`;
       }
 
