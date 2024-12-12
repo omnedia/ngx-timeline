@@ -1,5 +1,13 @@
 # ngx-timeline
 
+<a href="https://ngxui.com" target="_blank" style="display: flex;gap: .5rem;align-items: center;cursor: pointer; padding: 0 0 0 0; height: fit-content;">
+  <img src="https://ngxui.com/assets/img/ngxui-logo.png" style="width: 64px;height: 64px;">
+  <p style="font-weight: bold; padding: 0; margin: 0; font-size: 4rem">NGXUI</p>
+</a>
+
+This Library is part of the NGXUI ecosystem. <br>
+View all available components at https://ngxui.com
+
 `@omnedia/ngx-timeline` is an Angular component that helps you create elegant and responsive timelines. It offers dynamic scrolling effects, customizable orientation, and flexible styling options to fit your needs. Whether you're showcasing a sequence of events, project milestones, or any chronological content, this component makes it simple and stylish.
 
 ## Features
@@ -22,22 +30,26 @@ npm install @omnedia/ngx-timeline
 Import the `NgxTimelineComponent` in your Angular module or component:
 
 ```typescript
-import { NgxTimelineComponent } from '@omnedia/ngx-timeline';
+import {NgxTimelineComponent} from '@omnedia/ngx-timeline';
 
 @Component({
   ...
-  imports: [
-    ...
-    NgxTimelineComponent,
-  ],
+    imports:
+[
   ...
+    NgxTimelineComponent,
+],
+...
 })
-export class YourComponent {}
+
+export class YourComponent {
+}
 ```
 
 Use the component in your template:
 
 ```html
+
 <om-timeline
   [orientation]="'left'"
   [data]="timelineEntries"
@@ -78,6 +90,7 @@ const timelineEntries: TimelineEntry[] = [
 ## API
 
 ```html
+
 <om-timeline
   [orientation]="orientation"
   [data]="data"
@@ -106,6 +119,7 @@ const timelineEntries: TimelineEntry[] = [
 ## Example
 
 ```html
+
 <om-timeline
   [orientation]="'right'"
   [data]="[
@@ -120,29 +134,31 @@ const timelineEntries: TimelineEntry[] = [
 This example shows a right-aligned timeline with custom data.
 
 ## Styling
+
 ```typescript
 const timelineEntries: TimelineEntry[] = [
   {
     title: '<p class="timeline-title">Start</p>',
     content: '<div class="timeline-content">The beginning of the project.<div>',
   },
-    ...
+  ...
 ];
 ```
 
 ```html
+
 <om-timeline styleClass="custom-timeline" [data]="timelineEntries"></om-timeline>
 ```
 
 ```css
 /* Component Styling */
 .timeline-title, .timeline-content {
-    font-size: 2rem;
-    color: white;
+  font-size: 2rem;
+  color: white;
 }
 
 .timeline-title {
-    font-weight: blod;
+  font-weight: blod;
 }
 
 /* Global Styling */
