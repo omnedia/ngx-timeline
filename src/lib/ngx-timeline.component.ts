@@ -1,6 +1,7 @@
-import { CommonModule } from "@angular/common";
+import {CommonModule} from "@angular/common";
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   Input,
@@ -10,9 +11,9 @@ import {
   ViewChild,
   ViewChildren,
 } from "@angular/core";
-import { DomSanitizer } from "@angular/platform-browser";
-import { Subject, takeUntil } from "rxjs";
-import { TimelineEntry, TimelineEntryTemplate } from "./ngx-timeline.types";
+import {DomSanitizer} from "@angular/platform-browser";
+import {Subject, takeUntil} from "rxjs";
+import {TimelineEntry, TimelineEntryTemplate} from "./ngx-timeline.types";
 
 @Component({
   selector: "om-timeline",
@@ -24,7 +25,7 @@ import { TimelineEntry, TimelineEntryTemplate } from "./ngx-timeline.types";
 export class NgxTimelineComponent implements AfterViewInit, OnDestroy {
   @ViewChild("wrapper")
   wrapperRef!: ElementRef<HTMLElement>;
-
+  
   @ViewChildren("entries") entriesList!: QueryList<ElementRef<HTMLElement>>;
 
   @ViewChild("timelineBackground")
@@ -115,16 +116,20 @@ export class NgxTimelineComponent implements AfterViewInit, OnDestroy {
 
   constructor(
     private readonly sanitizer: DomSanitizer,
-    private renderer: Renderer2
-  ) {}
+    private readonly renderer: Renderer2,
+    private readonly cdr: ChangeDetectorRef
+  ) {
+  }
 
   ngAfterViewInit(): void {
+    this.entriesList.changes.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      setTimeout(() => {
+        this.setHeight();
+      }, 10);
+    });
+
     this.getViewEncapsulationTag();
     this.determineScrollContext();
-
-    this.entriesList.changes.pipe(takeUntil(this.destroy$)).subscribe((t) => {
-      this.setHeight();
-    });
 
     this.updateTimelineLine();
 
@@ -168,17 +173,22 @@ export class NgxTimelineComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
+    const templateData: TimelineEntryTemplate[] = [];
+
     this.data.forEach((data, index) => {
       const title = this.insertAttributeInTags(data.title);
       const content = this.insertAttributeInTags(data.content);
 
-      const templateData: TimelineEntryTemplate = {
+      const templateDataEntry: TimelineEntryTemplate = {
         title: this.sanitizer.bypassSecurityTrustHtml(title),
         content: this.sanitizer.bypassSecurityTrustHtml(content),
       };
 
-      this.templateData.push(templateData);
+      templateData.push(templateDataEntry);
     });
+
+    this.templateData = templateData;
+    this.cdr.detectChanges();
   }
 
   private insertAttributeInTags(inputString: string): string {
