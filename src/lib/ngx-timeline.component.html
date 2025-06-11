@@ -1,6 +1,6 @@
 <div
   class="om-timeline"
-  [ngStyle]="style"
+  [ngStyle]="style()"
   [ngClass]="styleClass"
   [class.left]="orientation === 'left'"
   [class.right]="orientation === 'right'"
@@ -8,25 +8,26 @@
   #wrapper
 >
   <div class="om-timeline-entries">
-    <div
-      *ngFor="let item of templateData; let i = index"
-      class="om-timeline-entry"
-      [ngClass]="{
+    @for (item of templateData(); track $index) {
+      <div
+        class="om-timeline-entry"
+        [ngClass]="{
         'right-side':
-          orientation === 'right' || (orientation === 'switch' && i % 2 !== 0),
+          orientation === 'right' || (orientation === 'switch' && $index % 2 !== 0),
         'left-side':
-          orientation === 'left' || (orientation === 'switch' && i % 2 === 0)
+          orientation === 'left' || (orientation === 'switch' && $index % 2 === 0)
       }"
-      #entries
-    >
-      <div class="om-timeline-entry-header">
-        <div class="om-timeline-circle">
-          <div class="om-timeline-inner-circle"></div>
+        #entries
+      >
+        <div class="om-timeline-entry-header">
+          <div class="om-timeline-circle">
+            <div class="om-timeline-inner-circle"></div>
+          </div>
+          <div class="om-timeline-entry-title" [innerHTML]="item.title"></div>
         </div>
-        <div class="om-timeline-entry-title" [innerHTML]="item.title"></div>
+        <div class="om-timeline-entry-content" [innerHTML]="item.content"></div>
       </div>
-      <div class="om-timeline-entry-content" [innerHTML]="item.content"></div>
-    </div>
+    }
 
     <div class="om-timeline-line-wrapper">
       <svg

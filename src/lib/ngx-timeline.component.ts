@@ -1,13 +1,14 @@
 import {CommonModule} from "@angular/common";
 import {
   AfterViewInit,
-  ChangeDetectorRef,
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   Input,
   OnDestroy,
   QueryList,
   Renderer2,
+  signal,
   ViewChild,
   ViewChildren,
 } from "@angular/core";
@@ -21,11 +22,12 @@ import {TimelineEntry, TimelineEntryTemplate} from "./ngx-timeline.types";
   styleUrls: ["./ngx-timeline.component.scss"],
   standalone: true,
   imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NgxTimelineComponent implements AfterViewInit, OnDestroy {
   @ViewChild("wrapper")
   wrapperRef!: ElementRef<HTMLElement>;
-  
+
   @ViewChildren("entries") entriesList!: QueryList<ElementRef<HTMLElement>>;
 
   @ViewChild("timelineBackground")
@@ -51,33 +53,33 @@ export class NgxTimelineComponent implements AfterViewInit, OnDestroy {
 
   @Input("entriesGap")
   set entriesGap(gap: string) {
-    this.style["--om-timeline-entries-gap"] = gap;
+    this.style.set({...this.style(), '--om-timeline-entries-gap': gap});
   }
 
   @Input("entryGap")
   set entryGap(gap: string) {
-    this.style["--om-timeline-entry-gap"] = gap;
+    this.style.set({...this.style(), '--om-timeline-entry-gap': gap});
   }
 
   @Input("titleGap")
   set titleGap(gap: string) {
-    this.style["--om-timeline-entry-title-gap"] = gap;
+    this.style.set({...this.style(), '--om-timeline-entry-title-gap': gap});
   }
 
   @Input("pathWidth")
   set pathWidth(pathWidth: string) {
-    this.style["--om-timeline-path-width"] = pathWidth;
+    this.style.set({...this.style(), '--om-timeline-path-width': pathWidth});
   }
 
   @Input("titleMaxWidth")
   set titleMaxWidth(titleMaxWidth: string) {
-    this.style["--om-timeline-entry-title-max-width"] = titleMaxWidth;
+    this.style.set({...this.style(), '--om-timeline-entry-title-max-width': titleMaxWidth});
   }
 
   @Input("pathColor")
   set pathColorValue(pathColor: string) {
     this.pathColor = pathColor;
-    this.style["--om-timeline-path-color"] = pathColor;
+    this.style.set({...this.style(), '--om-timeline-path-color': pathColor});
   }
 
   @Input("gradientColors")
@@ -89,8 +91,8 @@ export class NgxTimelineComponent implements AfterViewInit, OnDestroy {
     this.gradientStart = gradientColors[0];
     this.gradientEnd = gradientColors[1];
 
-    this.style["--om-timeline-gradient-start"] = this.gradientStart;
-    this.style["--om-timeline-gradient-end"] = this.gradientEnd;
+    this.style.set({...this.style(), '--om-timeline-gradient-start': this.gradientStart});
+    this.style.set({...this.style(), '--om-timeline-gradient-end': this.gradientEnd});
   }
 
   gradientStart = "#3b82f6";
@@ -105,19 +107,19 @@ export class NgxTimelineComponent implements AfterViewInit, OnDestroy {
 
   private data: TimelineEntry[] = [];
 
-  templateData: TimelineEntryTemplate[] = [];
+  templateData = signal<TimelineEntryTemplate[]>([]);
 
-  style: any = {};
+  style = signal({});
 
   private ngContentRef?: string;
 
   private scrollableParent: HTMLElement | Window = window;
   private scrollListener!: () => void;
+  private updatePending = false;
 
   constructor(
     private readonly sanitizer: DomSanitizer,
     private readonly renderer: Renderer2,
-    private readonly cdr: ChangeDetectorRef
   ) {
   }
 
@@ -136,7 +138,7 @@ export class NgxTimelineComponent implements AfterViewInit, OnDestroy {
     window.addEventListener("resize", () => this.setHeight());
   }
 
-  destroy$ = new Subject<void>();
+  private readonly destroy$ = new Subject<void>();
 
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -175,7 +177,7 @@ export class NgxTimelineComponent implements AfterViewInit, OnDestroy {
 
     const templateData: TimelineEntryTemplate[] = [];
 
-    this.data.forEach((data, index) => {
+    this.data.forEach((data) => {
       const title = this.insertAttributeInTags(data.title);
       const content = this.insertAttributeInTags(data.content);
 
@@ -187,8 +189,7 @@ export class NgxTimelineComponent implements AfterViewInit, OnDestroy {
       templateData.push(templateDataEntry);
     });
 
-    this.templateData = templateData;
-    this.cdr.detectChanges();
+    this.templateData.set(templateData);
   }
 
   private insertAttributeInTags(inputString: string): string {
@@ -233,47 +234,55 @@ export class NgxTimelineComponent implements AfterViewInit, OnDestroy {
   }
 
   updateTimelineLine(): void {
-    const rect = this.wrapperRef.nativeElement.getBoundingClientRect();
-    const scrollHeight =
-      this.scrollableParent === window
-        ? window.innerHeight
-        : (this.scrollableParent as HTMLElement).clientHeight;
+    if (this.updatePending) return;
 
-    const topPosition =
-      this.scrollableParent === window
-        ? rect.top * -1
-        : (this.scrollableParent as HTMLElement).scrollTop;
+    this.updatePending = true;
 
-    if (this.orientation === "switch") {
-      let progress = topPosition / (rect.height - scrollHeight);
+    requestAnimationFrame(() => {
+      this.updatePending = false;
 
-      if (progress >= 1) {
-        progress = 1;
-      } else if (progress <= 0) {
-        progress = 0;
+      const rect = this.wrapperRef.nativeElement.getBoundingClientRect();
+      const scrollHeight =
+        this.scrollableParent === window
+          ? window.innerHeight
+          : (this.scrollableParent as HTMLElement).clientHeight;
+
+      const topPosition =
+        this.scrollableParent === window
+          ? rect.top * -1
+          : (this.scrollableParent as HTMLElement).scrollTop;
+
+      if (this.orientation === "switch") {
+        let progress = topPosition / (rect.height - scrollHeight);
+
+        if (progress >= 1) {
+          progress = 1;
+        } else if (progress <= 0) {
+          progress = 0;
+        }
+
+        const length =
+          this.timelineGradientPathRef.nativeElement.getTotalLength();
+
+        this.timelineGradientPathRef.nativeElement.style.strokeDasharray = `${length}`;
+        this.timelineGradientPathRef.nativeElement.style.strokeDashoffset = `${
+          length * (1 - progress)
+        }`;
+
+        return;
       }
 
-      const length =
-        this.timelineGradientPathRef.nativeElement.getTotalLength();
+      let progress = topPosition / rect.height;
 
-      this.timelineGradientPathRef.nativeElement.style.strokeDasharray = `${length}`;
-      this.timelineGradientPathRef.nativeElement.style.strokeDashoffset = `${
-        length * (1 - progress)
-      }`;
+      if (topPosition >= rect.height || progress >= 1) {
+        this.timelineLineRef.nativeElement.style.height = `${rect.height}px`;
+        return;
+      }
 
-      return;
-    }
-
-    let progress = topPosition / rect.height;
-
-    if (topPosition >= rect.height || progress >= 1) {
-      this.timelineLineRef.nativeElement.style.height = `${rect.height}px`;
-      return;
-    }
-
-    this.timelineLineRef.nativeElement.style.height = `${
-      progress * rect.height + scrollHeight * 0.5
-    }px`;
+      this.timelineLineRef.nativeElement.style.height = `${
+        progress * rect.height + scrollHeight * 0.5
+      }px`;
+    });
   }
 
   updateSvgPath(): void {

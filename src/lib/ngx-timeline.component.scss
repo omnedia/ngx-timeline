@@ -38,7 +38,7 @@
     align-items: center;
     align-self: flex-start;
     gap: var(--om-timeline-entry-title-gap);
-    width: 100%;
+    width: 50%;
     max-width: var(--om-timeline-entry-title-max-width);
 
     .om-timeline-circle {
@@ -80,17 +80,17 @@
     .om-timeline-line {
       width: var(--om-timeline-path-width);
       background: linear-gradient(
-        to bottom,
-        transparent 0%,
-        #e2e8f0 50%,
-        transparent 100%
+          to bottom,
+          transparent 0%,
+          #e2e8f0 50%,
+          transparent 100%
       );
       mask-image: linear-gradient(
-        to bottom,
-        transparent 0%,
-        black 10%,
-        black 90%,
-        transparent 100%
+          to bottom,
+          transparent 0%,
+          black 10%,
+          black 90%,
+          transparent 100%
       );
       overflow: hidden;
       position: absolute;
@@ -102,10 +102,10 @@
     .om-timeline-motion {
       width: 2px;
       background: linear-gradient(
-        to top,
-        #7f00ff 0%,
-        #3b82f6 50%,
-        transparent 100%
+          to top,
+          #7f00ff 0%,
+          #3b82f6 50%,
+          transparent 100%
       );
       border-radius: 50%;
     }

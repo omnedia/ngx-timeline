@@ -64,7 +64,7 @@ Use the component in your template:
 The data input expects an array of objects representing the timeline entries. Each entry should have a title and content property. Both values can be html code.
 
 ```typescript
-const timelineEntries: TimelineEntry[] = [
+timelineEntries: TimelineEntry[] = [
   {
     title: '<p>Start</p>',
     content: '<div>The beginning of the project.<div>',
