@@ -7,7 +7,10 @@
 This Library is part of the NGXUI ecosystem. <br>
 View all available components at https://ngxui.com
 
-`@omnedia/ngx-timeline` is an Angular component that helps you create elegant and responsive timelines. It offers dynamic scrolling effects, customizable orientation, and flexible styling options to fit your needs. Whether you're showcasing a sequence of events, project milestones, or any chronological content, this component makes it simple and stylish.
+`@omnedia/ngx-timeline` is an Angular component that helps you create elegant and responsive timelines. It offers
+dynamic scrolling effects, customizable orientation, and flexible styling options to fit your needs. Whether you're
+showcasing a sequence of events, project milestones, or any chronological content, this component makes it simple and
+stylish.
 
 ## Features
 
@@ -26,17 +29,17 @@ npm install @omnedia/ngx-timeline
 
 ## Usage
 
-Import the `NgxTimelineComponent` in your Angular module or component:
+Import the `NgxTimelineComponent` and `NgxTimelineEntryComponent` in your Angular module or component:
 
 ```typescript
-import {NgxTimelineComponent} from '@omnedia/ngx-timeline';
+import { NgxTimelineComponent, NgxTimelineEntryComponent } from '@omnedia/ngx-timeline';
 
 @Component({
-  ...
-    imports:
+    ...
+        imports:
 [
-  ...
-    NgxTimelineComponent,
+    ...
+        NgxTimelineComponent, NgxTimelineEntryComponent
 ],
 ...
 })
@@ -51,40 +54,42 @@ Use the component in your template:
 
 <om-timeline
   [orientation]="'left'"
-  [data]="timelineEntries"
   [entriesGap]="'4rem'"
   [entryGap]="'2rem'"
   [titleGap]="'1.5rem'"
   styleClass="custom-timeline"
-></om-timeline>
-```
+>
+  <om-timeline-entry>
+    <ng-template #timelineTitle><p>Start</p></ng-template>
+    <ng-template #timelineContent>
+      <div>The beginning of the project.</div>
+    </ng-template>
+  </om-timeline-entry>
 
-## Data Structure
+  <om-timeline-entry>
+    <ng-template #timelineTitle><p>Development</p></ng-template>
+    <ng-template #timelineContent>
+      <div>Key milestones achieved.</div>
+    </ng-template>
+  </om-timeline-entry>
 
-The data input expects an array of objects representing the timeline entries. Each entry should have a title and content property. Both values can be html code.
-
-```typescript
-timelineEntries: TimelineEntry[] = [
-  {
-    title: '<p>Start</p>',
-    content: '<div>The beginning of the project.<div>',
-  },
-  {
-    title: '<p>Development</p>',
-    content: 'Key development milestones achieved.',
-  },
-  {
-    title: '<p>Launch</p>',
-    content: '<div>The project goes live!</div>',
-  },
-];
+  <om-timeline-entry>
+    <ng-template #timelineTitle><p>Launch</p></ng-template>
+    <ng-template #timelineContent>
+      <div>The project goes live!</div>
+    </ng-template>
+  </om-timeline-entry>
+</om-timeline>
 ```
 
 ## How It Works
 
-- Timeline Structure: The component organizes your content into a vertical timeline. Each entry is a combination of a title and content.
-- Scroll Animation: As the user scrolls, the timeline line animates, giving a visual indication of progress through the timeline.
-- Orientation: Display the timeline on either the left or right side of the content, depending on your design preference.
+- Timeline Structure: The component organizes your content into a vertical timeline. Each entry is a combination of a
+  title and content.
+- Scroll Animation: As the user scrolls, the timeline line animates, giving a visual indication of progress through the
+  timeline.
+- Orientation: Display the timeline on either the left or right side of the content, depending on your design
+  preference.
 
 ## API
 
@@ -92,7 +97,6 @@ timelineEntries: TimelineEntry[] = [
 
 <om-timeline
   [orientation]="orientation"
-  [data]="data"
   [entriesGap]="entriesGap"
   [entryGap]="entryGap"
   [titleGap]="titleGap"
@@ -101,18 +105,28 @@ timelineEntries: TimelineEntry[] = [
   [pathColor]="pathColor"
   [gradientColors]="gradientColors"
   styleClass="your-custom-class"
-></om-timeline>
+>
+  <om-timeline-entry>
+    <ng-template #timelineTitle>Title template</ng-template>
+    <ng-template #timelineContent>Content template</ng-template>
+  </om-timeline-entry>
+</om-timeline>
 ```
 
-- `data` (required): An array of timeline entries. Each entry must include a title and content.
-- `orientation` (optional): Defines the alignment of the timeline entries. Accepts 'left', 'right', or 'switch'. Default is 'left'.
-- `entriesGap` (optional): Defines the gap between timeline entries. Accepts any valid CSS size value. Default is '5rem'.
-- `entryGap` (optional): Defines the gap between the title and content within an entry. Accepts any valid CSS size value. Default is '4rem'.
-- `titleGap` (optional): Defines the gap between the circle and the title within an entry. Accepts any valid CSS size value. Default is '2rem'.
+- `orientation` (optional): Defines the alignment of the timeline entries. Accepts 'left', 'right', or 'switch'. Default
+  is 'left'.
+- `entriesGap` (optional): Defines the gap between timeline entries. Accepts any valid CSS size value. Default is '
+  5rem'.
+- `entryGap` (optional): Defines the gap between the title and content within an entry. Accepts any valid CSS size
+  value. Default is '4rem'.
+- `titleGap` (optional): Defines the gap between the circle and the title within an entry. Accepts any valid CSS size
+  value. Default is '2rem'.
 - `titleMaxWidth` (optional): Defines the max width of the title elements. Default is '25rem'.
 - `pathWidth` (optional): Defines the width of the timeline path. Accepts any valid CSS size value. Default is '2px'.
-- `pathColor` (optional): Defines the colors of the timeline path. Accepts an array of two CSS color values for the path. Default is '#e2e8f0'.
-- `gradientColors` (optional): Defines the colors for the gradient on the path. Accepts an array of two CSS color values. Default is ['#3b82f6', '#7f00ff'].
+- `pathColor` (optional): Defines the colors of the timeline path. Accepts an array of two CSS color values for the
+  path. Default is '#e2e8f0'.
+- `gradientColors` (optional): Defines the colors for the gradient on the path. Accepts an array of two CSS color
+  values. Default is ['#3b82f6', '#7f00ff'].
 - `styleClass` (optional): Custom CSS class to apply to the component.
 
 ## Example
@@ -121,48 +135,61 @@ timelineEntries: TimelineEntry[] = [
 
 <om-timeline
   [orientation]="'right'"
-  [data]="[
-    { title: 'Step 1', content: 'Initial planning phase.' },
-    { title: 'Step 2', content: 'Development in progress.' },
-    { title: 'Step 3', content: 'Final review and launch.' }
-  ]"
   styleClass="example-timeline"
-></om-timeline>
+>
+  <om-timeline-entry>
+    <ng-template #timelineTitle><p>Start</p></ng-template>
+    <ng-template #timelineContent>
+      <div>The beginning of the project.</div>
+    </ng-template>
+  </om-timeline-entry>
+
+  <om-timeline-entry>
+    <ng-template #timelineTitle><p>Development</p></ng-template>
+    <ng-template #timelineContent>
+      <div>Key milestones achieved.</div>
+    </ng-template>
+  </om-timeline-entry>
+
+  <om-timeline-entry>
+    <ng-template #timelineTitle><p>Launch</p></ng-template>
+    <ng-template #timelineContent>
+      <div>The project goes live!</div>
+    </ng-template>
+  </om-timeline-entry>
+</om-timeline>
 ```
 
-This example shows a right-aligned timeline with custom data.
+This example shows a right-aligned timeline with your entries.
 
 ## Styling
 
-```typescript
-const timelineEntries: TimelineEntry[] = [
-  {
-    title: '<p class="timeline-title">Start</p>',
-    content: '<div class="timeline-content">The beginning of the project.<div>',
-  },
-  ...
-];
-```
-
 ```html
 
-<om-timeline styleClass="custom-timeline" [data]="timelineEntries"></om-timeline>
+<om-timeline styleClass="custom-timeline">
+  <om-timeline-entry>
+    <ng-template #timelineTitle><p class="timeline-title">Start</p></ng-template>
+    <ng-template #timelineContent>
+      <div class="timeline-content">The beginning of the project.</div>
+    </ng-template>
+  </om-timeline-entry>
+</om-timeline>
 ```
 
 ```css
 /* Component Styling */
 .timeline-title, .timeline-content {
-  font-size: 2rem;
-  color: white;
+    font-size: 2rem;
+    color: white;
 }
 
 .timeline-title {
-  font-weight: blod;
+    font-weight: bold;
 }
 
 /* Global Styling */
 .custom-timeline .om-timeline-entry-header .om-timeline-circle {
-  background-color: #4caf50;
+    background-color: #4caf50;
 }
 ```
 

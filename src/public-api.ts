@@ -3,4 +3,4 @@
  */
 
 export * from "./lib/ngx-timeline.component";
-export * from "./lib/ngx-timeline.types";
+export * from "./lib/ngx-timeline-entry.component";

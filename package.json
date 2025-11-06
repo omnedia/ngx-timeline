@@ -1,7 +1,7 @@
 {
   "name": "@omnedia/ngx-timeline",
   "description": "A simple component library to add an animated timeline view.",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "peerDependencies": {
     "@angular/common": "^20.0.0",
     "@angular/core": "^20.0.0"

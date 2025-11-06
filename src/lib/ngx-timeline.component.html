@@ -8,7 +8,7 @@
   #wrapper
 >
   <div class="om-timeline-entries">
-    @for (item of templateData(); track $index) {
+    @for (entry of timeLineEntries; track $index) {
       <div
         class="om-timeline-entry"
         [ngClass]="{
@@ -23,18 +23,22 @@
           <div class="om-timeline-circle">
             <div class="om-timeline-inner-circle"></div>
           </div>
-          <div class="om-timeline-entry-title" [innerHTML]="item.title"></div>
+          <div class="om-timeline-entry-title">
+            <ng-container *ngTemplateOutlet="entry.titleTpl"></ng-container>
+          </div>
         </div>
-        <div class="om-timeline-entry-content" [innerHTML]="item.content"></div>
+        <div class="om-timeline-entry-content">
+          <ng-container *ngTemplateOutlet="entry.contentTpl"></ng-container>
+        </div>
       </div>
     }
 
     <div class="om-timeline-line-wrapper">
       <svg
-        #timelineSvg
-        class="om-timeline-svg"
-        xmlns="http://www.w3.org/2000/svg"
-        [class.d-none]="orientation !== 'switch'"
+          #timelineSvg
+          class="om-timeline-svg"
+          xmlns="http://www.w3.org/2000/svg"
+          [class.d-none]="orientation !== 'switch'"
       >
         <defs>
           <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
